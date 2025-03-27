@@ -1,0 +1,5 @@
+{
+  "watch": ["resources/**/*.js"],
+  "ext": "js",
+  "exec": "altv-server.exe"
+}

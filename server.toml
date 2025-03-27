@@ -1,0 +1,7 @@
+name = 'Copchase'
+port = 7788
+players = 1
+announce = false
+language = 'en'
+modules = ['js-module']
+debug = true
