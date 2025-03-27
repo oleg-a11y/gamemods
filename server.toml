@@ -4,5 +4,5 @@ players = 1
 announce = false
 language = 'en'
 modules = ['js-module']
-resources = ['core']
+resources = ['core', 'admin']
 debug = true

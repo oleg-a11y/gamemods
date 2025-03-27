@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        background: transparent;
+      }
+
+      .dashboard {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        display: flex;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .sidebar {
+        width: 250px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 0 20px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-header h2 {
+        font-size: 24px;
+        color: #fff;
+        font-weight: 500;
+      }
+
+      .sidebar-content {
+        padding: 20px 0;
+      }
+
+      .menu-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .menu-item.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border-left: 4px solid #4caf50;
+      }
+
+      .menu-item i {
+        font-size: 18px;
+        width: 20px;
+        text-align: center;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        height: 100%;
+      }
+
+      .content-section {
+        display: none;
+        height: 100%;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .section-header {
+        margin-bottom: 20px;
+      }
+
+      .section-header h2 {
+        font-size: 20px;
+        color: #fff;
+        font-weight: 500;
+      }
+
+      .section-content {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+      }
+
+      .coord-inputs {
+        display: flex;
+        gap: 10px;
+      }
+
+      .coord-input {
+        flex: 1;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+      }
+
+      .coord-input::-webkit-inner-spin-button,
+      .coord-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .coord-input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .coord-input:focus {
+        outline: none;
+        border-color: #4caf50;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .text-input {
+        width: 100%;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+      }
+
+      .text-input:focus {
+        outline: none;
+        border-color: #4caf50;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .action-btn {
+        width: 100%;
+        padding: 12px;
+        background: #4caf50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .action-btn:hover {
+        background: #45a049;
+        transform: translateY(-1px);
+      }
+
+      .action-btn:active {
+        transform: translateY(0);
+      }
+
+      .action-btn i {
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body style="display: none">
+    <div class="dashboard">
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <h2>Админ панель</h2>
+        </div>
+        <div class="sidebar-content">
+          <div class="menu-item active" data-section="teleport">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Телепорт</span>
+          </div>
+          <div class="menu-item" data-section="vehicles">
+            <i class="fas fa-car"></i>
+            <span>Спавн машин</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="content-section active" id="teleport-section">
+          <div class="section-header">
+            <h2>Телепортация</h2>
+          </div>
+          <div class="section-content">
+            <div class="input-group">
+              <label>Координаты:</label>
+              <div class="coord-inputs">
+                <input
+                  type="number"
+                  class="coord-input"
+                  id="x-coord"
+                  placeholder="X"
+                  step="0.1"
+                />
+                <input
+                  type="number"
+                  class="coord-input"
+                  id="y-coord"
+                  placeholder="Y"
+                  step="0.1"
+                />
+                <input
+                  type="number"
+                  class="coord-input"
+                  id="z-coord"
+                  placeholder="Z"
+                  step="0.1"
+                />
+              </div>
+            </div>
+            <button class="action-btn" id="teleport-btn">
+              <i class="fas fa-map-marker-alt"></i>
+              Телепортироваться
+            </button>
+          </div>
+        </div>
+
+        <div class="content-section" id="vehicles-section">
+          <div class="section-header">
+            <h2>Спавн машин</h2>
+          </div>
+          <div class="section-content">
+            <div class="input-group">
+              <label>Модель машины:</label>
+              <input
+                type="text"
+                class="text-input"
+                id="vehicle-model"
+                placeholder="Введите модель (например: adder)"
+              />
+            </div>
+            <button class="action-btn" id="spawn-vehicle-btn">
+              <i class="fas fa-car"></i>
+              Создать машину
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function clearInputs() {
+        document.getElementById("x-coord").value = "";
+        document.getElementById("y-coord").value = "";
+        document.getElementById("z-coord").value = "";
+
+        document.getElementById("vehicle-model").value = "";
+      }
+
+      function closePanel() {
+        if ("alt" in window) {
+          alt.emit("admin:closePanel");
+          clearInputs();
+        }
+      }
+
+      const menuItems = document.querySelectorAll(".menu-item");
+      const sections = document.querySelectorAll(".content-section");
+
+      menuItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          menuItems.forEach((i) => i.classList.remove("active"));
+
+          item.classList.add("active");
+
+          const sectionId = item.dataset.section;
+
+          sections.forEach((section) => section.classList.remove("active"));
+
+          document
+            .getElementById(`${sectionId}-section`)
+            .classList.add("active");
+        });
+      });
+
+      const teleportBtn = document.getElementById("teleport-btn");
+      teleportBtn.addEventListener("click", () => {
+        const x = parseFloat(document.getElementById("x-coord").value);
+        const y = parseFloat(document.getElementById("y-coord").value);
+        const z = parseFloat(document.getElementById("z-coord").value);
+
+        if (isNaN(x) || isNaN(y) || isNaN(z)) {
+          return;
+        }
+
+        if ("alt" in window) {
+          alt.emit("admin:teleport", x, y, z);
+        }
+      });
+
+      const spawnVehicleBtn = document.getElementById("spawn-vehicle-btn");
+      spawnVehicleBtn.addEventListener("click", () => {
+        const model = document.getElementById("vehicle-model").value.trim();
+
+        if (!model) {
+          return;
+        }
+
+        if ("alt" in window) {
+          alt.emit("admin:spawnVehicle", model);
+        }
+      });
+
+      if ("alt" in window) {
+        alt.on("admin:showPanel", () => {
+          document.body.style.display = "block";
+        });
+
+        alt.on("admin:hidePanel", () => {
+          document.body.style.display = "none";
+          clearInputs();
+        });
+      }
+    </script>
+  </body>
+</html>
